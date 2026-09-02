@@ -17,8 +17,8 @@ app.use((req, res, next) => {
 
 
 app.post("/recipes", async (req, res) => {
-    const { title, making_time, serves, ingredients, cost } = req.body;
     try {
+        const { title, making_time, serves, ingredients, cost } = req.body;
         if (!title || !making_time || !serves || !ingredients || !cost) throw new Error("not found params")
         const [result] = await pool.query(
             'insert into recipes (title,making_time,serves,ingredients,cost) values (?,?,?,?,?)', [title, making_time, serves, ingredients, cost]
