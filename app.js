@@ -9,7 +9,7 @@ app.use((req, res, next) => {
         try {
             req.body = JSON.parse(req.body.toString('utf8'));
         } catch (e) {
-            return res.status(400).json({ message: 'Invalid JSON' });
+            return res.status(200).json({ message: 'Invalid JSON' });
         }
     }
     next();
@@ -27,7 +27,7 @@ app.post("/recipes", async (req, res) => {
         res.status(200).json({ message: 'Recipe successfully created!', recipe: rows });
     } catch (err) {
         console.error(err);
-        res.status(500).json({
+        res.status(200).json({
             "message": "Recipe creation failed!",
             "required": "title, making_time, serves, ingredients, cost"
         })
@@ -39,7 +39,19 @@ app.get("/recipes", async (req, res) => {
         const [rows] = await pool.query('SELECT * FROM recipes');
         res.status(200).json({ recipes: [rows] });
     } catch (err) {
-        res.status(500).json({
+        res.status(200).json({
+            "message": "Recipe creation failed!",
+            "required": "title, making_time, serves, ingredients, cost"
+        })
+    }
+})
+
+app.get("/recipes/:id", async (req, res) => {
+    try {
+        const [rows] = await pool.query('SELECT * FROM recipes');
+        res.status(200).json({ recipes: [rows] });
+    } catch (err) {
+        res.status(200).json({
             "message": "Recipe creation failed!",
             "required": "title, making_time, serves, ingredients, cost"
         })
