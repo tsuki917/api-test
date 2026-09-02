@@ -37,7 +37,7 @@ app.post("/recipes", async (req, res) => {
 app.get("/recipes", async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT * FROM recipes');
-        res.status(200).json({ recipes: [rows] });
+        res.status(200).json({ recipes: rows });
     } catch (err) {
         res.status(200).json({
             "message": "Recipe creation failed!",
