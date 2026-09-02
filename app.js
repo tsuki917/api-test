@@ -1,0 +1,36 @@
+const express = require('express');
+const app = express();
+const PORT = process.env.PORT || 3000
+const pool = require('./db/db');
+
+app.use(express.json())
+
+app.get('/', async (req, res) => {
+    try {
+        const [rows] = await pool.query('SELECT 1 + 1 AS result');
+        res.json({ message: 'DB connected!', result: rows[0].result });
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post("/recipes", async (req, res) => {
+    const { title, making_time, serves, ingredients, cost } = req.body;
+    try {
+        const [result] = await pool.query(
+            'insert into recipes (title,making_time,serves,ingredients,cost) values (?,?,?,?,?)', [title, making_time, serves, ingredients, cost]
+        )
+        const [rows] = await pool.query('SELECT * FROM recipes WHERE id = ?', [result.insertId]);
+        res.status(200).json({ message: 'Recipe successfully created!', recipe: rows });
+    } catch (err) {
+        res.status(500).json({
+            "message": "Recipe creation failed!",
+            "required": "title, making_time, serves, ingredients, cost"
+        })
+    }
+})
+
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
