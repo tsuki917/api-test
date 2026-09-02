@@ -5,15 +5,6 @@ const pool = require('./db/db');
 
 app.use(express.json())
 
-app.get('/', async (req, res) => {
-    try {
-        const [rows] = await pool.query('SELECT 1 + 1 AS result');
-        res.json({ message: 'DB connected!', result: rows[0].result });
-    } catch (err) {
-        console.log(err)
-        res.status(500).json({ error: err.message });
-    }
-});
 
 app.post("/recipes", async (req, res) => {
     const { title, making_time, serves, ingredients, cost } = req.body;
