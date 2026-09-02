@@ -49,7 +49,7 @@ app.get("/recipes", async (req, res) => {
 app.get("/recipes/:id", async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT * FROM recipes where id = ?', [req.params.id]);
-        res.status(200).json({ recipe: rows[0], message: "Recipe details by id" });
+        res.status(200).json({ recipe: rows, message: "Recipe details by id" });
     } catch (err) {
         res.status(200).json({
             "message": "get Recipe id data failed!",
@@ -80,6 +80,21 @@ app.patch("/recipes/:id", async (req, res) => {
     }
 })
 
+app.delete("/recipes/:id", async (req, res) => {
+    try {
+        const id = req.params.id
+        const [result] = await pool.query(
+            `DELETE from recipes
+            WHERE id = ?`,
+            [id]
+        );
+        res.status(200).json({ message: "Recipe successfully removed!" });
+    } catch (err) {
+        res.status(200).json({
+            "message": "No Recipe found",
+        })
+    }
+})
 
 app.use((req, res) => {
     res.status(404).json({ message: 'Not found' });
