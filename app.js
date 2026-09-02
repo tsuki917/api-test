@@ -17,8 +17,8 @@ app.use((req, res, next) => {
 
 app.post("/recipes", async (req, res) => {
     const { title, making_time, serves, ingredients, cost } = req.body;
-    if (!title || !making_time || !serves || !ingredients || !cost) throw new Error("not found params")
     try {
+        if (!title || !making_time || !serves || !ingredients || !cost) throw new Error("not found params")
         const [result] = await pool.query(
             'insert into recipes (title,making_time,serves,ingredients,cost) values (?,?,?,?,?)', [title, making_time, serves, ingredients, cost]
         )
@@ -35,10 +35,7 @@ app.post("/recipes", async (req, res) => {
 
 app.get("/recipes", async (req, res) => {
     try {
-        const [result] = await pool.query(
-            'insert into recipes (title,making_time,serves,ingredients,cost) values (?,?,?,?,?)', [title, making_time, serves, ingredients, cost]
-        )
-        const [rows] = await pool.query('SELECT * FROM recipes WHERE id = ?', [result.insertId]);
+        const [rows] = await pool.query('SELECT * FROM recipes');
         res.status(200).json({ recipes: [rows] });
     } catch (err) {
         res.status(500).json({
