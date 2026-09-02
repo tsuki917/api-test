@@ -3,6 +3,7 @@ const app = express();
 const PORT = process.env.PORT || 3000
 const pool = require('./db/db');
 
+app.use(express.json());
 app.use((req, res, next) => {
     if (Buffer.isBuffer(req.body) && req.body.length > 0) {
         try {
