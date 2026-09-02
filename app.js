@@ -72,7 +72,7 @@ app.patch("/recipes/:id", async (req, res) => {
             [title, making_time, serves, ingredients, cost, id]
         );
         const [rows] = await pool.query('SELECT * FROM recipes WHERE id = ?', [id]);
-        res.status(200).json({ recipe: rows[0] });
+        res.status(200).json({ recipe: rows[0], message: "Recipe successfully updated!" });
     } catch (err) {
         res.status(200).json({
             "message": "Recipe update failed!",
