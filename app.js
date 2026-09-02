@@ -88,6 +88,7 @@ app.delete("/recipes/:id", async (req, res) => {
             WHERE id = ?`,
             [id]
         );
+        if (!result.length > 0) throw new Error("not found this id recipes")
         res.status(200).json({ message: "Recipe successfully removed!" });
     } catch (err) {
         res.status(200).json({
