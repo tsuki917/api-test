@@ -48,12 +48,34 @@ app.get("/recipes", async (req, res) => {
 
 app.get("/recipes/:id", async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM recipes');
-        res.status(200).json({ recipes: [rows] });
+        const [rows] = await pool.query('SELECT * FROM recipes where id = ?', [req.params.id]);
+        res.status(200).json({ recipe: rows[0], message: "Recipe details by id" });
     } catch (err) {
         res.status(200).json({
-            "message": "Recipe creation failed!",
-            "required": "title, making_time, serves, ingredients, cost"
+            "message": "get Recipe id data failed!",
+        })
+    }
+})
+
+app.patch("/recipes/:id", async (req, res) => {
+    try {
+        const id = req.params.id
+        const { title, making_time, serves, ingredients, cost } = req.body;
+        const [result] = await pool.query(
+            `UPDATE recipes SET
+                title = COALESCE(?, title),
+                making_time = COALESCE(?, making_time),
+                serves = COALESCE(?, serves),
+                ingredients = COALESCE(?, ingredients),
+                cost = COALESCE(?, cost)
+            WHERE id = ?`,
+            [title, making_time, serves, ingredients, cost, id]
+        );
+        const [rows] = await pool.query('SELECT * FROM recipes WHERE id = ?', [id]);
+        res.status(200).json({ recipe: rows[0] });
+    } catch (err) {
+        res.status(200).json({
+            "message": "Recipe update failed!",
         })
     }
 })
